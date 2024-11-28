@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #sentimentResult {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border: 1px solid #d4edda;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sentiment Analysis</h2>
+        <label for="review">Enter a review:</label>
+        <textarea id="review" rows="4" placeholder="Type your review here..."></textarea>
+        <button onclick="sendReview()">Get Sentiment</button>
+        <div id="sentimentResult"></div>
+    </div>
+
+    <script>
+        function sendReview() {
+            const reviewText = document.getElementById("review").value;
+            
+            if (reviewText === "") {
+                alert("Please enter a review text.");
+                return;
+            }
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ review: reviewText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const sentiment = data.sentiment;
+                document.getElementById("sentimentResult").innerText = `Sentiment: ${sentiment}`;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("sentimentResult").innerText = "Error occurred!";
+            });
+        }
+    </script>
+</body>
+</html>
